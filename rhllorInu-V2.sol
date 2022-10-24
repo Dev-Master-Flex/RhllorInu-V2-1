@@ -574,13 +574,13 @@ contract RhllorInu is ERC20, Ownable {
         buyBurnFee = _burnFee;
         buyVaultFee = _vaultFee;
         buyTotalFees = buyBurnFee + buyVaultFee;
-        require(buyTotalFees <= 15, "Must keep fees at 20% or less");
+        require(buyTotalFees <= 15, "Must keep fees at 15% or less");
     }
     function updateSellFees(uint256 _burnFee, uint256 _vaultFee) external onlyOwner {
         sellBurnFee = _burnFee;
         sellVaultFee = _vaultFee;
         sellTotalFees = sellBurnFee + sellVaultFee;
-        require(sellTotalFees <= 15, "Must keep fees at 25% or less");
+        require(sellTotalFees <= 15, "Must keep fees at 15% or less");
     }
     
     function updateStakingContract(address contractAddress) external onlyOwner {
