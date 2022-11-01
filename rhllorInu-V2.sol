@@ -139,7 +139,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         return _symbol;
     }
     function decimals() public view virtual override returns (uint8) {
-        return 6;
+        return 9;
     }
     function totalSupply() public view virtual override returns (uint256) {
         return _totalSupply;
@@ -453,6 +453,7 @@ contract RhllorInu is ERC20, Ownable {
     using SafeMath for uint256;
     IUniswapV2Router02 public immutable uniswapV2Router;
     address public immutable uniswapV2Pair;
+    uint8 private constant _decimals = 9;
     address public constant deadAddress = address(0xdead);
     bool private swapping;
     uint256 public maxTransactionAmount;
@@ -495,7 +496,7 @@ contract RhllorInu is ERC20, Ownable {
         uint256 _buyVaultFee = 9;
         uint256 _sellBurnFee = 1;
         uint256 _sellVaultFee = 9;
-        uint256 totalSupply = 10000 * 1e6 * 1e6;
+        uint256 totalSupply = 20000000000 * 10**_decimals;
         supply += totalSupply;
         walletDigit = 1;
         transDigit = 1;
@@ -538,9 +539,12 @@ contract RhllorInu is ERC20, Ownable {
         }
     }
 
-    function unblockBot(address notbot) public onlyOwner {
-        delete bots[notbot];
+    function unblockBot(address[] calldata accounts) public onlyOwner {
+        for(uint256 i = 0; i < accounts.length; i++) {
+                  delete bots[accounts[i]];
+        }
     }
+
     function updateTransDigit(uint256 newNum) external onlyOwner {
         require(newNum >= 1);
         transDigit = newNum;
@@ -567,15 +571,29 @@ contract RhllorInu is ERC20, Ownable {
         return true;
     }
 
+    function excludeFromMaxTransactionAdd(address[] memory accounts) public onlyOwner {
+        for (uint256 i = 0; i < accounts.length; i++) {
+           _isExcludedMaxTransactionAmount[accounts[i]] = true;
+        }
+    }
+
+    function excludeFromMaxTransactionRemove(address[] calldata accounts) public onlyOwner {
+        for(uint256 i = 0; i < accounts.length; i++) {
+                  delete _isExcludedMaxTransactionAmount[accounts[i]];
+        }
+    }
+
     function excludeFromMaxTransaction(address updAds, bool isEx) public onlyOwner {
         _isExcludedMaxTransactionAmount[updAds] = isEx;
     }
+
     function updateBuyFees(uint256 _burnFee, uint256 _vaultFee) external onlyOwner {
         buyBurnFee = _burnFee;
         buyVaultFee = _vaultFee;
         buyTotalFees = buyBurnFee + buyVaultFee;
         require(buyTotalFees <= 15, "Must keep fees at 15% or less");
     }
+
     function updateSellFees(uint256 _burnFee, uint256 _vaultFee) external onlyOwner {
         sellBurnFee = _burnFee;
         sellVaultFee = _vaultFee;
@@ -586,10 +604,25 @@ contract RhllorInu is ERC20, Ownable {
     function updateStakingContract(address contractAddress) external onlyOwner {
         staking = contractAddress;
     }
+
+    function excludeFromFeesAdd(address[] memory accounts) public onlyOwner {
+        for (uint256 i = 0; i < accounts.length; i++) {
+            _isExcludedFromFees[accounts[i]] = true;
+            emit ExcludeFromFees(accounts[i], true);
+        }
+    }
+
+    function excludeFromFeesRemove(address[] calldata accounts) public onlyOwner {
+        for(uint256 i = 0; i < accounts.length; i++) {
+                  delete _isExcludedFromFees[accounts[i]];
+        }
+    }
+
     function excludeFromFees(address account, bool excluded) public onlyOwner {
         _isExcludedFromFees[account] = excluded;
         emit ExcludeFromFees(account, excluded);
     }
+
     function updateLimits() private {
         maxTransactionAmount = supply * transDigit / 100;
         swapTokensAtAmount = supply * 5 / 10000; 
