@@ -1,11 +1,14 @@
 /**
 *
 *
+*
 People>Profits
 --------------
 为了文化.
 --------------
 People>Profits
+--------------
+*
 *
 *
 -Everything you think you know about defi is a lie. You live in chains. Those you worship are the very ones who betray you. 
@@ -23,6 +26,7 @@ People>Profits
 -Twitter-  https://twitter.com/tokenoffire
 -Telegram- https://t.me/RHLLORerc
 -Owner-    0x282Aae83497763Cf32006eEBE86495C5FD5A58BB
+-Dev       big-worm.eth @floki_gold_ceo
 *
 *
 ---------------------------------------------------------------------------------------------
